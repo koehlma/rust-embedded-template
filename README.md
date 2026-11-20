@@ -23,13 +23,13 @@ Install Rust through [rustup](https://rustup.rs), then install cargo-generate an
 
 ```sh
 cargo install cargo-generate
-cargo generate gh:silitics/rust-embedded-template --name blinky
+cargo generate gh:koehlma/rust-embedded-template --name blinky
 ```
 
 To skip the questions, for example in scripts, define the answers on the command line:
 
 ```sh
-cargo generate gh:silitics/rust-embedded-template --name blinky \
+cargo generate gh:koehlma/rust-embedded-template --name blinky \
     --define chip=rp2350 --define wifi=false --define embassy=true
 ```
 
