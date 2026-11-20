@@ -1,0 +1,41 @@
+[template]
+cargo_generate_version = ">=0.23.0"
+exclude = ["cyw43-firmware/*"]
+# Files of this repository that do not belong into generated projects.
+ignore = [".github", "LICENSE-APACHE", "LICENSE-MIT", "README.md", "scripts"]
+
+[placeholders.chip]
+type = "string"
+prompt = "Which chip does your board use?"
+choices = [
+    { value = "rp2040", label = "RP2040 (Pico, Pico W)" },
+    { value = "rp2350", label = "RP2350 (Pico 2, Pico 2 W)" },
+]
+default = "rp2040"
+
+[placeholders.wifi]
+type = "bool"
+prompt = "Does your board have Wi-Fi (Pico W, Pico 2 W)?"
+default = false
+
+# The Wi-Fi driver is part of Embassy. Wi-Fi projects always use Embassy.
+[conditional.'!wifi'.placeholders.embassy]
+type = "bool"
+prompt = "Use Embassy (async)? Otherwise, use rp-hal (blocking)."
+default = true
+
+[conditional.'!embassy']
+ignore = ["src/main.embassy.rs", "src/main.embassy-wifi.rs"]
+
+[conditional.'embassy && !wifi']
+ignore = ["src/main.rp-hal.rs", "src/main.embassy-wifi.rs"]
+
+[conditional.'!wifi']
+ignore = ["cyw43-firmware"]
+
+[conditional.'wifi']
+ignore = ["src/main.rp-hal.rs", "src/main.embassy.rs"]
+
+[hooks]
+pre = ["hooks/embassy-for-wifi.rhai"]
+post = ["hooks/select-main.rhai"]

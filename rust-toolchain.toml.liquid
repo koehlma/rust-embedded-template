@@ -1,0 +1,7 @@
+[toolchain]
+channel = "stable"
+{%- if chip == "rp2040" %}
+targets = ["thumbv6m-none-eabi"]
+{%- else %}
+targets = ["thumbv8m.main-none-eabihf"]
+{%- endif %}

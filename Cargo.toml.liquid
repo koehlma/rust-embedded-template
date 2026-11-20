@@ -1,0 +1,45 @@
+[package]
+name = "{{project-name}}"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+cortex-m-rt = "0.7.5"
+defmt = "1.0.1"
+defmt-rtt = "1.0.0"
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
+{%- if embassy %}
+embassy-executor = { version = "0.10.0", features = ["defmt", "executor-thread", "platform-cortex-m"] }
+embassy-rp = { version = "0.10.0", features = [
+    "defmt",
+    "critical-section-impl",
+    "time-driver",
+    {%- if chip == "rp2040" %}
+    "rp2040",
+    {%- else %}
+    "rp235xa",
+    {%- endif %}
+] }
+embassy-time = { version = "0.5.1", features = ["defmt", "defmt-timestamp-uptime"] }
+{%- if wifi %}
+cyw43 = { version = "0.7.0", features = ["defmt"] }
+cyw43-pio = { version = "0.10.0", features = ["defmt"] }
+static_cell = "2.1.0"
+{%- if chip == "rp2040" %}
+# The RP2040 lacks atomic compare-and-swap, which `static_cell` needs.
+portable-atomic = { version = "1.5.0", features = ["critical-section"] }
+{%- endif %}
+{%- endif %}
+{%- else %}
+embedded-hal = "1.0.0"
+{%- if chip == "rp2040" %}
+rp2040-boot2 = "0.3.0"
+rp2040-hal = { version = "0.12.0", features = ["critical-section-impl", "rt"] }
+{%- else %}
+rp235x-hal = { version = "0.4.0", features = ["critical-section-impl", "rt"] }
+{%- endif %}
+{%- endif %}
+
+[profile.release]
+debug = 2

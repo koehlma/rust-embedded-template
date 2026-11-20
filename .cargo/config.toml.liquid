@@ -1,0 +1,19 @@
+[build]
+{%- if chip == "rp2040" %}
+target = "thumbv6m-none-eabi"
+{%- else %}
+target = "thumbv8m.main-none-eabihf"
+{%- endif %}
+
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+# Flashes over a debug probe and prints the `defmt` logs.
+{%- if chip == "rp2040" %}
+runner = "probe-rs run --chip RP2040"
+{%- else %}
+runner = "probe-rs run --chip RP235x"
+{%- endif %}
+# Flashes over USB in BOOTSEL mode. Logs are not available.
+# runner = "picotool load --update --verify --execute -t elf"
+
+[env]
+DEFMT_LOG = "debug"
